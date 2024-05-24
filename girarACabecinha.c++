@@ -5,6 +5,7 @@
 int d = 0;
 
 int e = 0;
+bool yes = false;
 
 Servo servo_11;
 
@@ -36,15 +37,35 @@ void setup()
 void loop()
 {
   delay(500); // Wait for 500 millisecond(s)
-  if (0.01723 * readUltrasonicDistance(A0, A1) > 50) {
+  if (0.01723 * readUltrasonicDistance(A0, A1) > 20) {
     digitalWrite(5, HIGH);
     digitalWrite(6, HIGH);
   } else {
     digitalWrite(5, LOW);
     digitalWrite(6, LOW);
-    servo_11.write(0);
+    servo_11.write(0); 
     delay(1000); // Wait for 1000 millisecond(s)
+
     d = 0.01723 * readUltrasonicDistance(A3, A4);
+    if (d > e){
+      delay(1000); // Wait for 1000 millisecond(s)
+      digitalWrite(6, HIGH);
+      digitalWrite(4, HIGH);
+      delay(450); // Wait for 450 millisecond(s)
+      digitalWrite(6, LOW);
+      digitalWrite(4, LOW);
+    } else if (d < e){
+      delay(1000); // Wait for 1000 millisecond(s)
+      digitalWrite(6, HIGH);
+      digitalWrite(4, HIGH);
+      delay(450); // Wait for 450 millisecond(s)
+      digitalWrite(6, LOW);
+      digitalWrite(4, LOW);
+            delay(450); // Wait for 450 millisecond(s)
+      digitalWrite(5, HIGH);
+    digitalWrite(6, HIGH);
+    }
+    
     delay(500); // Wait for 500 millisecond(s)
     servo_11.write(180);
     delay(1000); // Wait for 1000 millisecond(s)
