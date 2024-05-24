@@ -1,13 +1,12 @@
-//CÓDIGO COM TENTATIVA DE CORREAÇÃO E PRONTO PARA TESTE:// Define os pinos para os motores do lado direito
+// C++ code
+//
 #include <Servo.h>
 
-int direita = 0;
+int d = 0;
 
-int esquerda = 0;
+int e = 0;
 
-int limite = 30;
-
-Servo servo;
+Servo servo_11;
 
 long readUltrasonicDistance(int triggerPin, int echoPin)
 {
@@ -23,104 +22,49 @@ long readUltrasonicDistance(int triggerPin, int echoPin)
   return pulseIn(echoPin, HIGH);
 }
 
-int motor1H = 6;
-int motor1L = 7;
-
-// Define os pinos para os motores do lado esquerdo
-int motor2H = 4;
-int motor2L = 5;
-
-// Define os pinos para os fotorresistores
-int fotorresistor1 = 3;
-int fotorresistor2 = 12;
-
 void setup()
 {
-  // Configura os pinos como saída ou entrada conforme necessário
-  servo.attach(11, 544, 2400);
-  Serial.begin(9600);
+  servo_11.attach(11, 500, 2500);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(7, OUTPUT);
 
-  servo.write(90);
-
-  pinMode(motor1H, OUTPUT);
-  pinMode(motor1L, OUTPUT);
-  pinMode(motor2H, OUTPUT);
-  pinMode(motor2L, OUTPUT);
-  pinMode(fotorresistor1, INPUT_PULLUP);
-  pinMode(fotorresistor2, INPUT_PULLUP);
-
-  // Inicia a comunicação serial
-  Serial.begin(9600);
+  servo_11.write(90);
 }
 
 void loop()
 {
-  // Lê os valores dos fotorresistores
-  int valorFotorresistor1 = digitalRead(fotorresistor1);
-  int valorFotorresistor2 = digitalRead(fotorresistor2);
-
-  // Verifica se ambos os sensores detectam preto
-  if (valorFotorresistor1 == 0 && valorFotorresistor2 == 0) {
-    // Ambos os fotorresistores detectam a linha preta, avança
-    analogWrite(motor1H, 190);
-    analogWrite(motor1L, 0);
-    analogWrite(motor2H, 0);
-    analogWrite(motor2L, 190);
-  }
-  else if (valorFotorresistor1 == 1 && valorFotorresistor2 == 1) {
-    // Ambos os fotorresistores detectam a linha preta, avança
-    analogWrite(motor1H, 0);
-    analogWrite(motor1L, 0);
-    analogWrite(motor2H, 0);
-    analogWrite(motor2L, 0);
-  } else if (valorFotorresistor1 == 0) {
-    // Apenas o fotorresistor 1 detecta a linha preta, para a roda direita
-    analogWrite(motor1H, 0);
-    analogWrite(motor1L, 0);
-    analogWrite(motor2H, 0);
-    analogWrite(motor2L, 190);
-  } else if (valorFotorresistor2 == 0) {
-    // Apenas o fotorresistor 2 detecta a linha preta, para a roda esquerda
-    analogWrite(motor1H, 190);
-    analogWrite(motor1L, 0);
-    analogWrite(motor2H, 0);
-    analogWrite(motor2L, 0);
-  }
-
-  if (0.01723 * readUltrasonicDistance(4, 5) < limite) {
-    servo.write(0);
-    delay(3000); // Wait for 3000 millisecond(s)
-    if (servo.read() == 0) {
-      esquerda = 0.01723 * readUltrasonicDistance(4, 5);
-    }
-    servo.write(180);
-    delay(4000); // Wait for 4000 millisecond(s)
-    if (servo.read() == 180) {
-      direita = 0.01723 * readUltrasonicDistance(4, 5);
-    }
-    if (direita >= esquerda) {
-      Serial.print("Direita: ");
-      Serial.print(direita);
-      Serial.print("  Esquerda: ");
-      Serial.print(esquerda);
-      Serial.println("------------  Direita");
-      Serial.println("==============================================");
-      servo.write(90);
+  delay(500); // Wait for 500 millisecond(s)
+  if (0.01723 * readUltrasonicDistance(A0, A1) > 50) {
+    digitalWrite(5, HIGH);
+    digitalWrite(6, HIGH);
+  } else {
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+    servo_11.write(0);
+    delay(1000); // Wait for 1000 millisecond(s)
+    d = 0.01723 * readUltrasonicDistance(A3, A4);
+    delay(500); // Wait for 500 millisecond(s)
+    servo_11.write(180);
+    delay(1000); // Wait for 1000 millisecond(s)
+    e = 0.01723 * readUltrasonicDistance(A3, A4);
+    delay(500); // Wait for 500 millisecond(s)
+    servo_11.write(90);
+    if (d > e) {
+      delay(1000); // Wait for 1000 millisecond(s)
+      digitalWrite(6, HIGH);
+      digitalWrite(4, HIGH);
+      delay(450); // Wait for 450 millisecond(s)
+      digitalWrite(6, LOW);
+      digitalWrite(4, LOW);
     } else {
-      Serial.print("Direita: ");
-      Serial.print(direita);
-      Serial.print("  Esquerda: ");
-      Serial.print(esquerda);
-      Serial.println("------------  Esquerda");
-      Serial.println("================================");
-      servo.write(90);
+      delay(1000); // Wait for 1000 millisecond(s)
+      digitalWrite(5, HIGH);
+      digitalWrite(7, HIGH);
+      delay(450); // Wait for 450 millisecond(s)
+      digitalWrite(5, LOW);
+      digitalWrite(7, LOW);
     }
   }
-
-  // Define a velocidade dos motores
-
-  // Aguarda um curto período de tempo antes de repetir o loop
 }
-
-// C++ code
-//
