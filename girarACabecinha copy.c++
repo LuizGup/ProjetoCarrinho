@@ -10,7 +10,7 @@ Servo servo_11;
 
 long readUltrasonicDistance(int triggerPin, int echoPin)
 {
-  pinMode(triggerPin, OUTPUT); // Clear the trigger
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
   digitalWrite(triggerPin, LOW);
   delayMicroseconds(2);
   // Sets the trigger pin to HIGH state for 10 microseconds
@@ -33,21 +33,16 @@ void setup()
   servo_11.write(99);
 }
 
-void loop()
-{
-  if (0.01723 * readUltrasonicDistance(A0, A1) > 35)
-  {
+void loop() {
+
+  delay(500); // Wait for 500 millisecond(s)
+
+  if (0.01723 * readUltrasonicDistance(A0, A1) > 35) {
     digitalWrite(5, HIGH);
     digitalWrite(6, HIGH);
-    // Wait for 500 millisecond(s)
+  } 
 
-    // servo_11.write(120);
-    // delay(100); // Wait for 500 millisecond(s)
-    // servo_11.write(60);
-    //     delay(100); // Wait for 500 millisecond(s)
-  }
-  else
-  {
+else {
     digitalWrite(5, LOW);
     digitalWrite(6, LOW);
     servo_11.write(10);
@@ -59,17 +54,14 @@ void loop()
     e = 0.01723 * readUltrasonicDistance(A3, A4);
     delay(500); // Wait for 500 millisecond(s)
     servo_11.write(99);
-    if (d > e)
-    {
+    if (d > e) {
       delay(1000); // Wait for 1000 millisecond(s)
       digitalWrite(6, HIGH);
       digitalWrite(4, HIGH);
       delay(450); // Wait for 450 millisecond(s)
       digitalWrite(6, LOW);
       digitalWrite(4, LOW);
-    }
-    else
-    {
+    } else {
       delay(1000); // Wait for 1000 millisecond(s)
       digitalWrite(5, HIGH);
       digitalWrite(7, HIGH);
